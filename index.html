@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=430, initial-scale=1.0" />
+  <title>Ziele abhaken</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      height: 932px;
+      width: 100%;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: start;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 💡 Großes, weiches, pulsierendes blaues Licht */
+    .glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 1200px;
+      height: 1200px;
+      background: radial-gradient(circle, rgba(0, 64, 255, 0.3) 0%, transparent 80%);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      filter: blur(120px);
+      animation: pulse 6s infinite ease-in-out;
+      z-index: 0;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 0.25;
+      }
+      50% {
+        opacity: 0.6;
+      }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 430px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      color: #ffffff;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px rgba(0, 128, 255, 0.5);
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 10px;
+    }
+
+    li {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      border-radius: 12px;
+      padding: 12px 15px;
+      margin: 12px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+
+    label {
+      flex: 1;
+      margin-left: 12px;
+      font-size: 1rem;
+    }
+
+    input[type="checkbox"] {
+      transform: scale(1.4);
+      accent-color: #00aaff;
+    }
+
+    li:hover {
+      transform: scale(1.02);
+    }
+
+    .input-section {
+      margin-bottom: 15px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .input-section input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .input-section button {
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: none;
+      background: #006eff;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .input-section button:hover {
+      background: #0051cc;
+    }
+  </style>
+</head>
+<body>
+  <div class="glow"></div>
+
+  <div class="container">
+    <h1>🎯 Meine Ziele</h1>
+
+    <div class="input-section">
+      <input type="text" id="new-goal" placeholder="Neues Ziel eingeben..." />
+      <button onclick="addGoal()">➕</button>
+    </div>
+
+    <ul id="goals-list"></ul>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'meineZieleV2';
+    const listEl = document.getElementById('goals-list');
+    const inputEl = document.getElementById('new-goal');
+
+    function loadGoals() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : [
+        "🧘‍♂️ 10 Minuten meditieren",
+        "💪 1 Stunde Sport",
+        "📖 Buch lesen",
+        "🥗 Gesund essen",
+        "🚶 30 Minuten spazieren",
+        "📝 To-Do Liste schreiben"
+      ];
+    }
+
+    function saveGoals(goals) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(goals));
+    }
+
+    function renderGoals(goals) {
+      listEl.innerHTML = '';
+      goals.forEach((goal, index) => {
+        const li = document.createElement('li');
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.addEventListener('change', () => {
+          goals.splice(index, 1);
+          saveGoals(goals);
+          renderGoals(goals);
+        });
+
+        const label = document.createElement('label');
+        label.textContent = goal;
+
+        li.appendChild(checkbox);
+        li.appendChild(label);
+        listEl.appendChild(li);
+      });
+    }
+
+    function addGoal() {
+      const newGoal = inputEl.value.trim();
+      if (newGoal === '') return;
+
+      currentGoals.push(newGoal);
+      saveGoals(currentGoals);
+      renderGoals(currentGoals);
+      inputEl.value = '';
+    }
+
+    const currentGoals = loadGoals();
+    renderGoals(currentGoals);
+  </script>
+</body>
+</html>
