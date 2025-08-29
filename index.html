@@ -1,210 +1,196 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=430, initial-scale=1.0" />
-  <title>Ziele abhaken</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script&amp;display=swap">
+    <title>Test</title>
+<style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      height: 932px;
-      width: 100%;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: start;
-      padding: 20px;
-      position: relative;
-      overflow: hidden;
+  margin: 0;
+  min-height: 100vh;
+  background: #0b0b0f; /* dunkler Grundton */
+  overflow: hidden;
+  position: relative;
+  color: white;
+  font-family: Calibri;
+}
+
+/* Leuchtpunkte-Ebene */
+body::before,
+body::after {
+  content: "";
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  filter: blur(120px);
+  animation: pulse 6s infinite alternate ease-in-out;
+  z-index: -1;
+}
+
+/* Punkt oben links */
+body::before {
+  top: -100px;
+  left: -100px;
+  background: rgba(220, 20, 60, 0.6); /* rötlich-crimson */
+}
+
+/* Punkt unten rechts */
+body::after {
+  bottom: -100px;
+  right: -100px;
+  background: rgba(255, 64, 129, 0.6); /* pinkrot */
+}
+
+/* Animation: Pulsieren */
+@keyframes pulse {
+  from { opacity: 0.4; transform: scale(0.9); }
+  to   { opacity: 0.9; transform: scale(1.1); }
+}
+
+
+    #title {
+        font-family: "Dancing Script"!important; 
+        justify-content: center;
+        display: flex;
     }
 
-    /* 💡 Großes, weiches, pulsierendes blaues Licht */
-    .glow {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 1200px;
-      height: 1200px;
-      background: radial-gradient(circle, rgba(0, 64, 255, 0.3) 0%, transparent 80%);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      filter: blur(120px);
-      animation: pulse 6s infinite ease-in-out;
-      z-index: 0;
+    .textContainer {
+        font-family: "Dancing Script"!important; 
+        font-size: 20px;
+        background-color: none;
+        margin-top: 80px;
+        justify-content: center;
+        justify-items: center;
+        display: flex;
+        text-align: center;
+        
     }
 
-    @keyframes pulse {
-      0%, 100% {
-        opacity: 0.25;
-      }
-      50% {
-        opacity: 0.6;
-      }
-    }
+    /* Container für die Herzen */
+/* Inhalt über den Herzen */
+#content {
+  position: relative;
+  z-index: 1;
+}
 
-    .container {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 430px;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    }
+/* Vollflächiger Herz-Hintergrund */
+#hearts {
+  position: fixed;
+  inset: 0;                /* füllt die ganze Viewport-Fläche */
+  pointer-events: none;    /* blockiert keine Klicks */
+  z-index: 0;              /* unter dem Inhalt */
+  overflow: visible;
+}
 
-    h1 {
-      text-align: center;
-      font-size: 1.8rem;
-      color: #ffffff;
-      margin-bottom: 20px;
-      text-shadow: 0 0 10px rgba(0, 128, 255, 0.5);
-    }
+/* Herz-Form (ohne Bild) */
+.heart {
+  --size: 18px;            /* wird per JS randomisiert */
+  --dur: 4s;               /* wird per JS randomisiert */
 
-    ul {
-      list-style: none;
-      padding: 0;
-      margin-top: 10px;
-    }
+  position: absolute;
+  bottom: -24px;           /* Start knapp unterhalb des sichtbaren Bereichs */
+  width: var(--size);
+  height: var(--size);
+  color: rgba(235, 64, 109, 0.45);     /* rötlich + schon gedämpft */
+  background: currentColor;
+  transform: rotate(-45deg);
+  opacity: 0.35;           /* insgesamt geringere Opacity */
+  animation: floatUp var(--dur) linear forwards;
+}
 
-    li {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(8px);
-      border-radius: 12px;
-      padding: 12px 15px;
-      margin: 12px 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      color: #fff;
-      transition: all 0.3s ease;
-    }
+/* Herz-Rundungen */
+.heart::before,
+.heart::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: currentColor;
+  border-radius: 50%;
+}
 
-    label {
-      flex: 1;
-      margin-left: 12px;
-      font-size: 1rem;
-    }
+.heart::before { top: -50%; left: 0; }
+.heart::after  { top: 0;    left: 50%; }
 
-    input[type="checkbox"] {
-      transform: scale(1.4);
-      accent-color: #00aaff;
-    }
+/* Flug-Animation: von unten nach oben über die ganze Seite */
+@keyframes floatUp {
+  0%   { transform: translateY(0)        scale(1)   rotate(-45deg); opacity: 0.35; }
+  70%  { opacity: 0.28; }
+  100% { transform: translateY(-110vh)   scale(1.4) rotate(-45deg); opacity: 0; }
+}
 
-    li:hover {
-      transform: scale(1.02);
-    }
+/* Barrierearmut: weniger Animation bei Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .heart { animation: none; opacity: 0.25; }
+}
 
-    .input-section {
-      margin-bottom: 15px;
-      display: flex;
-      gap: 10px;
-    }
 
-    .input-section input {
-      flex: 1;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      outline: none;
-      background: rgba(255,255,255,0.1);
-      color: white;
-    }
+/* Animation */
+@keyframes floatUp {
+  0%   { transform: translateY(0) scale(1) rotate(-45deg); opacity: 1; }
+  50%  { opacity: 1; }
+  100% { transform: translateY(-200px) scale(1.5) rotate(-45deg); opacity: 0; }
+}
 
-    .input-section button {
-      padding: 10px 16px;
-      border-radius: 8px;
-      border: none;
-      background: #006eff;
-      color: white;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
 
-    .input-section button:hover {
-      background: #0051cc;
-    }
-  </style>
-</head>
+</style></head>
+
+
 <body>
-  <div class="glow"></div>
-
-  <div class="container">
-    <h1>🎯 Meine Ziele</h1>
-
-    <div class="input-section">
-      <input type="text" id="new-goal" placeholder="Neues Ziel eingeben..." />
-      <button onclick="addGoal()">➕</button>
+  <main id="content">
+    <div id="title">
+        <h1>Test</h1>
     </div>
+    <div class="textContainer">
+        <p>Wie oben erwähnt, führt eine genauere, wissenschaftliche Betrachtung zu komplexeren Definitions- und Beschreibungsversuchen. Die Eigenschaft des „Text-Seins“ bezeichnet man als Textualität, die sprachwissenschaftliche Untersuchung von Texten ist die Textlinguistik. Diese Disziplin stellt verschiedene Textualitätskriterien zur Verfügung.
 
-    <ul id="goals-list"></ul>
-  </div>
+Robert-Alain de Beaugrande und Wolfgang Ulrich Dressler stellten 1981 eine Reihe solcher Kriterien vor. Diese Kriterien beziehen sich einerseits auf die Merkmale des Textes selbst (Kohäsion, also formaler Zusammenhalt und Kohärenz, also inhaltlicher Zusammenhalt), andererseits auf die Merkmale einer Kommunikations­situation, aus der der betreffende Text entsteht bzw. in der er eingesetzt wird (Intentionalität, Akzeptabilität, Informativität, Situationalität).
 
-  <script>
-    const STORAGE_KEY = 'meineZieleV2';
-    const listEl = document.getElementById('goals-list');
-    const inputEl = document.getElementById('new-goal');
+Kohäsion und Kohärenz gehören zu den am weitesten akzeptierten Textualitätskriterien, aber auch hier gibt es Abweichungen: Es gibt durchaus Texte, welche aus zusammenhanglosen Worten oder gar Lauten, zum Teil auch aus bis zu bloßen Geräuschen reduzierten Klangmalereien bestehen, und die, im Ganzen dennoch vielschichtig interpretierbar, eine eigene Art von Textualität erreichen (zum Beispiel Dada-Gedichte).
 
-    function loadGoals() {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : [
-        "🧘‍♂️ 10 Minuten meditieren",
-        "💪 1 Stunde Sport",
-        "📖 Buch lesen",
-        "🥗 Gesund essen",
-        "🚶 30 Minuten spazieren",
-        "📝 To-Do Liste schreiben"
-      ];
-    }
+Hier kommen die situationsbezogenen Textualitätskriterien ins Spiel: Texte sind auch dadurch bestimmt, dass ein Sender sie mit einer bestimmten Absicht (Intention) produziert und/oder ein Empfänger sie als solche akzeptiert. Ob ein Text für einen bestimmten Empfänger akzeptabel ist, hängt wiederum stark davon ab, ob dieser einen Zusammenhang der empfangenen Äußerung mit seiner Situation herstellen, den Text also in seine Vorstellungswelt „einbauen“ kann (Situationalität), und ob der Text für ihn informativ ist, also in einem bestimmten Verhältnis erwartete und unerwartete, bekannte und neue Elemente enthält. Um auf das Beispiel des Dada-Gedichtes zurückzukommen: Ein nicht offensichtlich kohäsiver oder kohärenter Text kann als solcher akzeptabel sein, wenn der Empfänger davon ausgeht, dass die Intention des Senders ein hohes Maß an überraschenden oder von der Norm abweichenden Elementen im Text erfordert.
 
-    function saveGoals(goals) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(goals));
-    }
+Die Intertextualität als letztes der Textualitätskriterien nach de Beaugrande und Dressler ist die Eigenschaft eines Textes, mit anderen Texten in Verbindung zu stehen und auf sie Bezug zu nehmen. In literarischen Texten geschieht dies häufig durch bewusste Verweise und Zitate, Intertextualität kann ihren Ausdruck jedoch z. B. auch darin finden, dass ein Gebrauchstext die üblichen Konventionen seiner Textsorte erfüllt.</p>
+    </div>
+  </main>
 
-    function renderGoals(goals) {
-      listEl.innerHTML = '';
-      goals.forEach((goal, index) => {
-        const li = document.createElement('li');
+  <div id="hearts"><div class="heart" style="left: 89.325201vw; --size: 22.834648437021933px; --dur: 3.2793933469918284s; opacity: 0.35;"></div><div class="heart" style="left: 86.810746vw; --size: 17.78205868759664px; --dur: 6.851566223691354s; opacity: 0.31;"></div><div class="heart" style="left: 73.440949vw; --size: 16.123650485808753px; --dur: 4.480025247878194s; opacity: 0.23;"></div><div class="heart" style="left: 58.808573vw; --size: 23.180881381606824px; --dur: 6.651448037606925s; opacity: 0.27;"></div><div class="heart" style="left: 46.971234vw; --size: 12.736881576415616px; --dur: 4.5067869673846275s; opacity: 0.26;"></div><div class="heart" style="left: 26.831855vw; --size: 26.492557928816634px; --dur: 4.5979504181649125s; opacity: 0.23;"></div><div class="heart" style="left: 70.274334vw; --size: 13.9714214261412px; --dur: 6.140666506800136s; opacity: 0.25;"></div><div class="heart" style="left: 93.254155vw; --size: 24.17744785494225px; --dur: 3.6893256783065262s; opacity: 0.31;"></div><div class="heart" style="left: 27.18471vw; --size: 29.024054682921484px; --dur: 4.451399723343716s; opacity: 0.34;"></div><div class="heart" style="left: 20.857691vw; --size: 25.17296526287065px; --dur: 5.3526481809571305s; opacity: 0.39;"></div><div class="heart" style="left: 76.08808vw; --size: 24.036662519506713px; --dur: 3.497543958593266s; opacity: 0.22;"></div><div class="heart" style="left: 17.438768vw; --size: 25.89205840685292px; --dur: 6.693968868439043s; opacity: 0.28;"></div><div class="heart" style="left: 60.198849vw; --size: 20.512724927420884px; --dur: 4.338517525777599s; opacity: 0.27;"></div><div class="heart" style="left: 75.92638vw; --size: 12.214868815717319px; --dur: 6.0710927328178625s; opacity: 0.31;"></div><div class="heart" style="left: 8.523775vw; --size: 19.756713085131487px; --dur: 5.319959356886791s; opacity: 0.28;"></div><div class="heart" style="left: 3.182252vw; --size: 24.718616660068854px; --dur: 3.3531177534338172s; opacity: 0.27;"></div><div class="heart" style="left: 79.309455vw; --size: 16.541740933559364px; --dur: 6.244233282367791s; opacity: 0.34;"></div><div class="heart" style="left: 89.134599vw; --size: 27.482555682286307px; --dur: 5.483484813331772s; opacity: 0.38;"></div><div class="heart" style="left: 4.070591vw; --size: 10.881696860609305px; --dur: 3.2457927633140424s; opacity: 0.31;"></div><div class="heart" style="left: 66.209451vw; --size: 27.510387600121483px; --dur: 6.410927966215372s; opacity: 0.31;"></div><div class="heart" style="left: 32.64242vw; --size: 15.349489762372032px; --dur: 3.4408791480394694s; opacity: 0.4;"></div><div class="heart" style="left: 66.515823vw; --size: 31.80264994159652px; --dur: 6.705940991052556s; opacity: 0.29;"></div><div class="heart" style="left: 77.774214vw; --size: 28.587370021433834px; --dur: 6.138617473506623s; opacity: 0.35;"></div><div class="heart" style="left: 74.274207vw; --size: 10.480238456512584px; --dur: 3.3189097367113543s; opacity: 0.34;"></div><div class="heart" style="left: 67.109155vw; --size: 16.14613443269445px; --dur: 5.523692709211696s; opacity: 0.3;"></div><div class="heart" style="left: 85.374226vw; --size: 20.848455465638892px; --dur: 3.81038506177183s; opacity: 0.23;"></div><div class="heart" style="left: 21.983965vw; --size: 25.1233698283784px; --dur: 3.6464333815821273s; opacity: 0.33;"></div><div class="heart" style="left: 79.687816vw; --size: 24.357356745156416px; --dur: 5.105263186441525s; opacity: 0.34;"></div><div class="heart" style="left: 19.283178vw; --size: 13.700900146457574px; --dur: 6.907728426188812s; opacity: 0.29;"></div><div class="heart" style="left: 88.353119vw; --size: 20.743211690764362px; --dur: 4.751113159712406s; opacity: 0.28;"></div><div class="heart" style="left: 44.687101vw; --size: 24.428734592901364px; --dur: 4.804216294023163s; opacity: 0.32;"></div><div class="heart" style="left: 40.943288vw; --size: 24.646036346077818px; --dur: 6.8025193107873285s; opacity: 0.3;"></div><div class="heart" style="left: 74.779227vw; --size: 21.21723424440814px; --dur: 5.8035064858461025s; opacity: 0.34;"></div><div class="heart" style="left: 50.205997vw; --size: 11.463717022289112px; --dur: 4.425423535348288s; opacity: 0.4;"></div><div class="heart" style="left: 81.579344vw; --size: 10.159912105088583px; --dur: 6.230578812026157s; opacity: 0.23;"></div><div class="heart" style="left: 74.720141vw; --size: 23.667903703165194px; --dur: 4.364894417764782s; opacity: 0.36;"></div><div class="heart" style="left: 15.689995vw; --size: 25.613628227624034px; --dur: 4.567804913735945s; opacity: 0.35;"></div></div>
 
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.addEventListener('change', () => {
-          goals.splice(index, 1);
-          saveGoals(goals);
-          renderGoals(goals);
-        });
+    
+    
+    <script>
+      const wrap = document.getElementById("hearts");
 
-        const label = document.createElement('label');
-        label.textContent = goal;
+function createHeart() {
+  const h = document.createElement("div");
+  h.className = "heart";
 
-        li.appendChild(checkbox);
-        li.appendChild(label);
-        listEl.appendChild(li);
-      });
-    }
+  // über die ganze Breite verteilen
+  h.style.left = Math.random() * 100 + "vw";
 
-    function addGoal() {
-      const newGoal = inputEl.value.trim();
-      if (newGoal === '') return;
+  // zarte Variation in Größe, Dauer und Transparenz
+  h.style.setProperty("--size", (10 + Math.random() * 22) + "px");
+  h.style.setProperty("--dur",  (3 + Math.random() * 4) + "s");
+  h.style.opacity = (0.22 + Math.random() * 0.18).toFixed(2); // 0.22–0.40
 
-      currentGoals.push(newGoal);
-      saveGoals(currentGoals);
-      renderGoals(currentGoals);
-      inputEl.value = '';
-    }
+  wrap.appendChild(h);
 
-    const currentGoals = loadGoals();
-    renderGoals(currentGoals);
-  </script>
-</body>
-</html>
+  // großzügig aufräumen (länger als max. Animationsdauer)
+  setTimeout(() => h.remove(), 9000);
+}
+
+// Takt: häufig, aber leicht (Performance schonend)
+const interval = setInterval(createHeart, 200);
+
+// Optional: pausieren, wenn Tab inaktiv (spart CPU)
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) { clearInterval(interval); }
+});
+
+
+// Alle 500ms ein Herz erzeugen
+setInterval(createHeart, 500);
+
+    </script>
+
+</body></html>
